@@ -6,7 +6,7 @@ using Azure.Core;
 
 namespace MyOffice.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/empinfo")]
     [ApiController]
     public class EmpInfosController : ControllerBase
     {
@@ -16,8 +16,8 @@ namespace MyOffice.Controllers
             _empInfoContext = empInfoContext;
         }
 
-        // Get : api/EmpInfos
-        [HttpGet]
+        // Get : /api/empinfo/list
+        [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<EmpInfo>>> GetEmpInfos()
         {
             if (_empInfoContext == null)
@@ -27,8 +27,8 @@ namespace MyOffice.Controllers
             return await _empInfoContext.EmpInfos.ToListAsync();
         }
 
-        // Get : api/EmpInfos/2
-        [HttpGet("Id")]
+        // Get : /api/empinfo/details/{id}
+        [HttpGet("details/{id:int}")]
         public async Task<ActionResult<EmpInfo>> GetEmpInfo(int id)
         {
             if (_empInfoContext == null)
@@ -43,18 +43,23 @@ namespace MyOffice.Controllers
             return empinfo;
         }
 
-        // Post : api/EmpInfos
-        [HttpPost]
-        public async Task<ActionResult<EmpInfo>> PostEmpInfo(EmpInfo empInfo)
+        // Post : /api/empinfo/create
+        [HttpPost("create")]
+        public async Task<ActionResult<EmpInfo>> PostEmpInfo([FromBody] EmpInfo empInfo)
         {
+            if (empInfo == null)
+            {
+                return BadRequest("Invalid input.");
+            }
             _empInfoContext.EmpInfos.Add(empInfo);
             await _empInfoContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetEmpInfo), new { id = empInfo.Id });
+            //return Ok(empInfo);
+            return Ok(new { code = 200, message = "Employee info created successfully." });
         }
 
-        // Put : api/EmpInfos/2
-        [HttpPut]
-        public async Task<ActionResult<EmpInfo>> PutEmpInfo(int id, EmpInfo empInfo)
+        // Put : /api/empinfo/update/{id}
+        [HttpPut("update/{id:int}")]
+        public async Task<IActionResult> PutEmpInfo(int id, [FromBody] EmpInfo empInfo)
         {
             if (id != empInfo.Id)
             {
@@ -70,7 +75,8 @@ namespace MyOffice.Controllers
                 if (!EmpInfoExists(id)) { return NotFound(); }
                 else { throw; }
             }
-            return NoContent();
+            //return NoContent();
+            return Ok(new { code = 200, message = "Employee info updated successfully." });
         }
 
         private bool EmpInfoExists(long id)
@@ -78,8 +84,8 @@ namespace MyOffice.Controllers
             return (_empInfoContext.EmpInfos?.Any(empinfo => empinfo.Id == id)).GetValueOrDefault();
         }
 
-        // Delete : api/EmpInfos/2
-        [HttpDelete("{id}")]
+        // Delete : /api/empinfo/delete/{id}
+        [HttpDelete("delete/{id:int}")]
         public async Task<ActionResult<EmpInfo>> DeleteEmpInfo(int id)
         {
             if (_empInfoContext.EmpInfos is null)
@@ -93,7 +99,8 @@ namespace MyOffice.Controllers
             }
             _empInfoContext.EmpInfos.Remove(empinfo);
             await _empInfoContext.SaveChangesAsync();
-            return NoContent();
+            //return NoContent();
+            return Ok(new { code = 200, message = "Employee info deleted successfully." });
         }
     }
 }

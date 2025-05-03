@@ -12,7 +12,7 @@ using MyOffice.Models;
 namespace MyOffice.Migrations
 {
     [DbContext(typeof(EmpInfoContext))]
-    [Migration("20250416161540_Initial")]
+    [Migration("20250503195418_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -33,13 +33,34 @@ namespace MyOffice.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("EmpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpBloodGroup")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EmpDepartment")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmpDesignation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EmpJoiningDate")
+                    b.Property<DateTime?>("EmpDoB")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmpEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpGender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("EmpImage")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<DateTime?>("EmpJoiningDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmpName")
